@@ -4,7 +4,8 @@
 
 - name: Set version to actual version
   set_fact:
-    wildfly_mariadb_connector_j_version_actual: "{{ wildfly_mariadb_connector_j_version }}"
+    wildfly_mariadb_connector_j_version_actual: "\
+    {{ wildfly_mariadb_connector_j_version }}"
   when: wildfly_mariadb_connector_j_version != 'latest'
 
 - name: Ensure directory for MariaDB Connector/J exists
@@ -14,9 +15,13 @@
 
 - name: Download MariaDB Connector/J
   get_url:
-    url: "https://downloads.mariadb.com/Connectors/java/connector-java-{{ wildfly_mariadb_connector_j_version_actual }}/mariadb-java-client-{{ wildfly_mariadb_connector_j_version_actual }}.jar"
+    url: "https://downloads.mariadb.com/Connectors/java/\
+    connector-java-{{ wildfly_mariadb_connector_j_version_actual }}/\
+    mariadb-java-client-{{ wildfly_mariadb_connector_j_version_actual }}.jar"
     dest: "{{ wildfly_mariadb_connector_j_path }}"
-    checksum: "sha256:https://downloads.mariadb.com/Connectors/java/connector-java-{{ wildfly_mariadb_connector_j_version_actual }}/sha256sums.txt"
+    checksum: "sha256:https://downloads.mariadb.com/Connectors/java/\
+    connector-java-{{ wildfly_mariadb_connector_j_version_actual }}/\
+    sha256sums.txt"
 
 - name: Update MariaDB Connector/J module.xml for WildFly
   template:
@@ -29,7 +34,8 @@
     paths: "{{ wildfly_mariadb_connector_j_path }}"
     patterns: 'mariadb-java-client-*.jar'
     file_type: file
-    excludes: "mariadb-java-client-{{ wildfly_mariadb_connector_j_version_actual }}.jar"
+    excludes: "mariadb-java-client-\
+    {{ wildfly_mariadb_connector_j_version_actual }}.jar"
   register: wildfly_mariadb_connector_j_found_files
   when: wildfly_mariadb_connector_j_clean_old_files
 
