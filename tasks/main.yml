@@ -1,0 +1,41 @@
+---
+- include: determine-latest.yml
+  when: wildfly_mariadb_connector_j_version == 'latest'
+
+- name: Set version to actual version
+  set_fact:
+    wildfly_mariadb_connector_j_version_actual: "{{ wildfly_mariadb_connector_j_version }}"
+  when: wildfly_mariadb_connector_j_version != 'latest'
+
+- name: Ensure directory for MariaDB Connector/J exists
+  file:
+    path: "{{ wildfly_mariadb_connector_j_path }}"
+    state: directory
+
+- name: Download MariaDB Connector/J
+  get_url:
+    url: "https://downloads.mariadb.com/Connectors/java/connector-java-{{ wildfly_mariadb_connector_j_version_actual }}/mariadb-java-client-{{ wildfly_mariadb_connector_j_version_actual }}.jar"
+    dest: "{{ wildfly_mariadb_connector_j_path }}"
+    checksum: "sha256:https://downloads.mariadb.com/Connectors/java/connector-java-{{ wildfly_mariadb_connector_j_version_actual }}/sha256sums.txt"
+
+- name: Update MariaDB Connector/J module.xml for WildFly
+  template:
+    src: module.xml.j2
+    dest: "{{ wildfly_mariadb_connector_j_path }}"
+  register: wildfly_mariadb_connector_j_changed
+
+- name: Search previous MariaDB Connector/J JARs
+  find:
+    paths: "{{ wildfly_mariadb_connector_j_path }}"
+    patterns: 'mariadb-java-client-*.jar'
+    file_type: file
+    excludes: "mariadb-java-client-{{ wildfly_mariadb_connector_j_version_actual }}.jar"
+  register: wildfly_mariadb_connector_j_found_files
+  when: wildfly_mariadb_connector_j_clean_old_files
+
+- name: Delete previous MariaDB Connector/J JARs
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ wildfly_mariadb_connector_j_found_files['files'] }}"
+  when: wildfly_mariadb_connector_j_clean_old_files

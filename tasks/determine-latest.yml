@@ -1,0 +1,20 @@
+---
+- name: Get download page for "latest"
+  get_url:
+    url: https://downloads.mariadb.com/Connectors/java/latest/
+    dest: /tmp/mariadb-connect-j-latest-page-ansible-managed.html
+    mode: "644"
+
+- name: Search latest version in page
+  shell: >
+    grep -Eo
+    '"mariadb-java-client-[0-9\.]+\.jar"'
+    /tmp/mariadb-connect-j-latest-page-ansible-managed.html
+  changed_when: false
+  register: wildfly_mariadb_connector_j_version_latest
+
+- name: Set version to actual latest version
+  set_fact:
+    # Extract the version number
+    # The [1:-1] part removes the "" around the matched string
+    wildfly_mariadb_connector_j_version_actual: "{{ wildfly_mariadb_connector_j_version_latest.stdout[1:-1] |replace('mariadb-java-client-', '') | replace('.jar', '') }}"

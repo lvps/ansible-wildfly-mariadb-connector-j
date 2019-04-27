@@ -1,0 +1,3 @@
+---
+wildfly_mariadb_connector_j_version: 'latest'
+wildfly_mariadb_connector_j_clean_old_files: false

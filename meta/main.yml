@@ -1,0 +1,19 @@
+galaxy_info:
+  author: lvps
+  description: Install MariaDB Connector/J as a WildFly module
+  company: ''
+
+  license: MIT
+
+  min_ansible_version: 2.4
+
+  platforms:
+  - name: EL
+    versions:
+    - 7
+
+  galaxy_tags:
+  - WildFly
+  - MariaDB
+
+dependencies: []
