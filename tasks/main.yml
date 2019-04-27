@@ -26,7 +26,8 @@
 - name: Update MariaDB Connector/J module.xml for WildFly
   template:
     src: module.xml.j2
-    dest: "{{ wildfly_mariadb_connector_j_path }}"
+    # Take path, remove last / if present, add "/module.xml".
+    dest: "{{ wildfly_mariadb_connector_j_path.rstrip('/') + '/module.xml' }}"
   register: wildfly_mariadb_connector_j_changed
 
 - name: Search previous MariaDB Connector/J JARs
