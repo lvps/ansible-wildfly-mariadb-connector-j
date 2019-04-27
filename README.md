@@ -54,7 +54,7 @@ Example Playbook
       wildfly_mariadb_connector_j_version: 'latest',
       wildfly_mariadb_connector_j_path: '/opt/foo/modules/system/layers/foo/org/mariadb/jdbc/main/'
       wildfly_mariadb_connector_j_clean_old_files: true
-	}
+    }
 ```
 
 License
